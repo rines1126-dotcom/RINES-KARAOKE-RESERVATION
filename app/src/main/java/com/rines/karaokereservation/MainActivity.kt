@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity() {
         searchField = EditText(this).apply {
             hint = "Search number, title or artist..."
             textSize = 16f
-            singleLine = true
+            setSingleLine(true)
         }
         layout.addView(searchField)
 
