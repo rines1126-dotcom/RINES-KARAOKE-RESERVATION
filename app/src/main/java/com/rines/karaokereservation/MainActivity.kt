@@ -1,8 +1,12 @@
+
 package com.rines.karaokereservation
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.graphics.Color
+import android.view.Gravity
 import android.widget.*
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
 
@@ -14,8 +18,9 @@ class MainActivity : AppCompatActivity() {
 
     private val deviceId by lazy {
         val prefs = getSharedPreferences("reservation", MODE_PRIVATE)
-        prefs.getString("device_id", null) ?: java.util.UUID.randomUUID().toString()
-            .also { prefs.edit().putString("device_id", it).apply() }
+        prefs.getString("device_id", null)
+            ?: java.util.UUID.randomUUID().toString()
+                .also { prefs.edit().putString("device_id", it).apply() }
     }
 
     private lateinit var songNumber: EditText
@@ -25,7 +30,51 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        showOpeningScreen()
+    }
 
+    private fun showOpeningScreen() {
+        val splash = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            setBackgroundColor(Color.rgb(5, 10, 25))
+            setPadding(24, 24, 24, 24)
+        }
+
+        val logo = ImageView(this).apply {
+            setImageResource(R.drawable.rines_logo)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+        }
+
+        splash.addView(
+            logo,
+            LinearLayout.LayoutParams(260, 260)
+        )
+
+        val title = TextView(this).apply {
+            text = "RINES KARAOKE"
+            textSize = 26f
+            setTextColor(Color.CYAN)
+            gravity = Gravity.CENTER
+        }
+        splash.addView(title)
+
+        val subtitle = TextView(this).apply {
+            text = "RESERVATION"
+            textSize = 18f
+            setTextColor(Color.WHITE)
+            gravity = Gravity.CENTER
+        }
+        splash.addView(subtitle)
+
+        setContentView(splash)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            showMainScreen()
+        }, 2500)
+    }
+
+    private fun showMainScreen() {
         val layout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(24, 24, 24, 24)
@@ -112,12 +161,17 @@ class MainActivity : AppCompatActivity() {
                 reservationList.removeAllViews()
 
                 for (item in snapshot.children) {
-                    val owner = item.child("deviceId").getValue(String::class.java)
+                    val owner = item.child("deviceId")
+                        .getValue(String::class.java)
+
                     if (owner != deviceId) continue
 
-                    val title = item.child("songTitle").getValue(String::class.java) ?: ""
-                    val number = item.child("songNumber").getValue(String::class.java) ?: ""
-                    val status = item.child("status").getValue(String::class.java) ?: "Waiting"
+                    val title = item.child("songTitle")
+                        .getValue(String::class.java) ?: ""
+                    val number = item.child("songNumber")
+                        .getValue(String::class.java) ?: ""
+                    val status = item.child("status")
+                        .getValue(String::class.java) ?: "Waiting"
 
                     val row = LinearLayout(this@MainActivity).apply {
                         orientation = LinearLayout.VERTICAL
@@ -138,9 +192,10 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                         row.addView(cancel)
+
                     } else if (status == "Playing") {
                         val stop = Button(this@MainActivity).apply {
-                            text = "STOP REQUEST"
+                            text = "STOP"
                             setOnClickListener {
                                 item.ref.child("stopRequested").setValue(true)
                                 Toast.makeText(
