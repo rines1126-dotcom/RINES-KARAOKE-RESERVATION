@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "455525629946",
+    "firebase_url": "https://rines-karaoke-reservation-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "rines-karaoke-reservation",
+    "storage_bucket": "rines-karaoke-reservation.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:455525629946:android:d45f2eece31b6313efee43",
+        "android_client_info": {
+          "package_name": "com.rines.karaokereservation"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIs1mvuYEvbeCwKifmeJwbEDFoQnaE81o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
